@@ -1,11 +1,7 @@
 import { SignInButton } from "./SignInButton";
 import styles from "./styles.module.scss";
 
-interface SubscribeButtonProps {
-  priceId: string;
-}
-
-export function Header({ priceId }: SubscribeButtonProps) {
+export function Header() {
   return (
     <header className={styles.headerContainer}>
       <div className={styles.headerContent}>

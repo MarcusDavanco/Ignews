@@ -1,7 +1,11 @@
+import { query as q } from "faunadb";
+
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 
-export const authOptions = {
+import { fauna } from "../../../services/fauna";
+
+export default NextAuth({
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
@@ -13,6 +17,17 @@ export const authOptions = {
       },
     }),
   ],
-};
+  callbacks: {
+    //@ts-ignore-next-line
+    async signIn(user, account, profile) {
+      const { email } = user.user;
 
-export default NextAuth(authOptions);
+      try {
+        await fauna.query(q.Create(q.Collection("users"), { data: { email } }));
+        return true;
+      } catch {
+        return false;
+      }
+    },
+  },
+});
